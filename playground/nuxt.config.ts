@@ -1,11 +1,17 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@nuxt/fonts', '@nuxtjs/tailwindcss', '@unocss/nuxt'],
+  modules: ['@nuxt/fonts', '@unocss/nuxt'],
+  css: ['~/assets/main.css'],
   unocss: {
     disableNuxtInlineStyle: false,
   },
+  postcss: {
+    plugins: {
+      '@tailwindcss/postcss': {},
+    },
+  },
   fonts: {
-    experimental: { addPreloadLinks: true },
+    experimental: { addPreloadLinks: true, processCSSVariables: true },
     providers: {
       custom: '~/providers/custom',
     },
