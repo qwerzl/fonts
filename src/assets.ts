@@ -69,7 +69,13 @@ export async function setupPublicAssetStrategy(options: ModuleOptions['assets'] 
     // Use storage to cache the font data between requests
     let res = await storage.getItemRaw(key)
     if (!res) {
-      res = await fetch(url).then(r => r.arrayBuffer()).then(r => Buffer.from(r))
+      try {
+        res = await fetch(url).then(r => r.arrayBuffer()).then(r => Buffer.from(r))
+      }
+      catch (error) {
+        logger.error(error)
+        throw new Error('Failed to inject font files. Terminating.')
+      }
       await storage.setItemRaw(key, res)
     }
     return res
@@ -150,7 +156,13 @@ export async function setupPublicAssetStrategy(options: ModuleOptions['assets'] 
             logger.info('Downloading fonts...')
           }
           logger.log(colors.gray('  ├─ ' + url))
-          res = await fetch(url).then(r => r.arrayBuffer()).then(r => Buffer.from(r))
+          try {
+            res = await fetch(url).then(r => r.arrayBuffer()).then(r => Buffer.from(r))
+          }
+          catch (error) {
+            logger.error(error)
+            throw new Error('Failed to inject font files. Terminating.')
+          }
           await storage.setItemRaw(key, res)
         }
         await fsp.writeFile(join(cacheDir, filename), res)
